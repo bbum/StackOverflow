@@ -114,7 +114,7 @@
 	end = [NSDate timeIntervalSinceReferenceDate];
 	assert(_c == TESTCASES);
 	NSLog(@"Synchronized, 2 queue: %2.5f seconds", end - start);
-
+	
 	start = [NSDate timeIntervalSinceReferenceDate];
 	_c = 0;
 	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -131,7 +131,7 @@
 	end = [NSDate timeIntervalSinceReferenceDate];
 	assert(_c == TESTCASES);
 	NSLog(@"Dispatch sync, 2 queue: %2.5f seconds", end - start);
-
+	
 	start = [NSDate timeIntervalSinceReferenceDate];
 	_c = 0;
 	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -151,6 +151,191 @@
 	end = [NSDate timeIntervalSinceReferenceDate];
 	assert(_c == TESTCASES);
 	NSLog(@"Dispatch async 2 queue add completion: %2.5f seconds", end - start);
+
+#define TESTCASE_SPLIT_IN_10 (TESTCASES/10)
+	dispatch_queue_t serial3 = dispatch_queue_create("serial 3", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial4 = dispatch_queue_create("serial 4", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial5 = dispatch_queue_create("serial 5", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial6 = dispatch_queue_create("serial 6", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial7 = dispatch_queue_create("serial 7", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial8 = dispatch_queue_create("serial 8", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial9 = dispatch_queue_create("serial 9", DISPATCH_QUEUE_SERIAL);
+	dispatch_queue_t serial10 = dispatch_queue_create("serial 10", DISPATCH_QUEUE_SERIAL);
+	start = [NSDate timeIntervalSinceReferenceDate];
+	_c = 0;
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial1, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial2, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial3, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial4, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial5, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial6, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial7, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial8, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial8, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial10, ^(size_t i){
+			[self synchronizedAdd:o];
+		});
+	});
+	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+	end = [NSDate timeIntervalSinceReferenceDate];
+	assert(_c == TESTCASES);
+	NSLog(@"Synchronized, 10 queue: %2.5f seconds", end - start);
+	
+	start = [NSDate timeIntervalSinceReferenceDate];
+	_c = 0;
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial1, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial2, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial3, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial4, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial5, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial6, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial7, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial8, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial9, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial10, ^(size_t i){
+			[self dispatchSyncAdd:o];
+		});
+	});
+	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+	end = [NSDate timeIntervalSinceReferenceDate];
+	assert(_c == TESTCASES);
+	NSLog(@"Dispatch sync, 10 queue: %2.5f seconds", end - start);
+	
+	start = [NSDate timeIntervalSinceReferenceDate];
+	_c = 0;
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial1, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial2, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial3, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial4, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial5, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial6, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial7, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial8, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial9, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		dispatch_apply(TESTCASE_SPLIT_IN_10, serial10, ^(size_t i){
+			[self dispatchASyncAdd:o];
+		});
+	});
+	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+	end = [NSDate timeIntervalSinceReferenceDate];
+	NSLog(@"Dispatch async, 10 queue: %2.5f seconds", end - start);
+	dispatch_sync(_q, ^{;}); // wait for async stuff to complete
+	end = [NSDate timeIntervalSinceReferenceDate];
+	assert(_c == TESTCASES);
+	NSLog(@"Dispatch async 10 queue add completion: %2.5f seconds", end - start);
+
+	exit(0);
 }
 @end
 
